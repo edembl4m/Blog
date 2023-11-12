@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import PostForm from "./components/PostForm";
 import PostList from "./components/PostList";
+import Select from "./components/UI/Select/Select";
 import './styles/App.css';
 
 
@@ -13,6 +14,7 @@ function App() {
       {id: 3, title: 'Javascript 3', body: 'Описание третьего поста про JS'}
     ]
   );
+  const [selectedSort, setSelectedSort] = useState('');
 
 
   const createPost = (newPost) => {
@@ -25,9 +27,28 @@ function App() {
   }
 
 
+  const sortPost = (sort) => {
+    setSelectedSort(sort);
+    setPosts([...posts].sort((a, b) => a[sort].localeCompare(b[sort])))
+  }
+
+
   return (
     <div className="App">
       <PostForm create={createPost}/>
+      <hr style={{margin: '15px 0'}}/>
+      <div>
+        <Select
+          value={selectedSort}
+          onCahange={sortPost}
+          defaultValue='Сортировка по:'
+          options={[
+            {value: 'title', name: 'По названию'},
+            {value: 'body', name: 'По описанию'}
+          ]}
+
+        />
+      </div>
       {
         posts.length
           ? <PostList remove={removePost} posts={posts} title={'Посты про JS'}/>

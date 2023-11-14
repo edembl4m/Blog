@@ -21,3 +21,24 @@
     justify-content: space-between;
     align-items: center;
 }
+
+.post-enter {
+    transform: translateX(-350px);
+    opacity: 0;
+}
+
+.post-enter-active {
+    transform: translateX(0px);
+    opacity: 1;
+    transition: all 500ms ease-in;
+}
+
+.post-exit {
+    opacity: 1;
+}
+
+.post-exit-active {
+    transform: translateX(-350px);
+    opacity: 0;
+    transition: all 500ms ease-in;
+}

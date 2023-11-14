@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import PostService from "./API/PostService";
 import PostFilter from "./components/PostFilter";
 import PostForm from "./components/PostForm";
 import PostList from "./components/PostList";
@@ -10,22 +11,29 @@ import './styles/App.css';
 
 function App() {
 
-  const[posts, setPosts] = useState(
-    [
-      {id: 1, title: 'Вишни', body: 'Б Описание первого поста'},
-      {id: 2, title: 'Арбузы вишни', body: 'В Описание второго поста'},
-      {id: 3, title: 'Яблоки', body: 'А Описание третьего поста'}
-    ]
-  );
-
+  const [posts, setPosts] = useState([]);
   const [filter, setFilter] = useState({sort: '', query: ''});
   const [modal, setModal] = useState(false);
   const sortedAndSearchedPosts = usePosts(posts, filter.sort, filter.query);
+  const [isPostLoading, setIsPostLoading] = useState(false);
+
+
+  useEffect(() => {
+    fetchPosts();
+  }, [])
 
 
   const createPost = (newPost) => {
     setPosts([...posts, newPost]);
     setModal(false);
+  }
+
+
+  async function fetchPosts() {
+    setIsPostLoading(true);
+    const posts = await PostService.getAll();
+    setPosts(posts);
+    setIsPostLoading(false);
   }
 
 
@@ -36,6 +44,7 @@ function App() {
 
   return (
     <div className="App">
+      <button onClick={fetchPosts}>GET POSTS</button>
       <Button style={{marginTop: '30px'}}onClick={() => setModal(true)}>Создать пользователя</Button>
       <Modal visible={modal} setVisible={setModal}>
         <PostForm create={createPost}/>
@@ -45,7 +54,11 @@ function App() {
         filter={filter}
         setFilter={setFilter}
       />
-      <PostList remove={removePost} posts={sortedAndSearchedPosts} title={'Посты про JS'}/>
+      {
+        isPostLoading
+        ? <h1 style={{textAlign: 'center'}}>Идет загрузка...</h1>
+        : <PostList remove={removePost} posts={sortedAndSearchedPosts} title={'Посты про JS'}/>
+      }
     </div>
   );
 }

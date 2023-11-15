@@ -4,6 +4,7 @@ import PostFilter from "./components/PostFilter";
 import PostForm from "./components/PostForm";
 import PostList from "./components/PostList";
 import Button from "./components/UI/Button/Button";
+import Loader from "./components/UI/Loader/Loader";
 import Modal from "./components/UI/Modal/Modal";
 import { usePosts } from "./hooks/usePosts";
 import './styles/App.css';
@@ -56,7 +57,9 @@ function App() {
       />
       {
         isPostLoading
-        ? <h1 style={{textAlign: 'center'}}>Идет загрузка...</h1>
+        ? <div style={{display: 'flex', justifyContent: 'center', marginTop: 50}}>
+            <Loader />
+          </div>
         : <PostList remove={removePost} posts={sortedAndSearchedPosts} title={'Посты про JS'}/>
       }
     </div>

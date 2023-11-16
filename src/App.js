@@ -6,6 +6,7 @@ import PostList from "./components/PostList";
 import Button from "./components/UI/Button/Button";
 import Loader from "./components/UI/Loader/Loader";
 import Modal from "./components/UI/Modal/Modal";
+import { useFetching } from "./hooks/useFetching";
 import { usePosts } from "./hooks/usePosts";
 import './styles/App.css';
 
@@ -16,7 +17,10 @@ function App() {
   const [filter, setFilter] = useState({sort: '', query: ''});
   const [modal, setModal] = useState(false);
   const sortedAndSearchedPosts = usePosts(posts, filter.sort, filter.query);
-  const [isPostLoading, setIsPostLoading] = useState(false);
+  const [fetchPosts, isPostLoading, postError] = useFetching(async () => {
+    const posts = await PostService.getAll();
+    setPosts(posts);
+  })
 
 
   useEffect(() => {
@@ -30,14 +34,6 @@ function App() {
   }
 
 
-  async function fetchPosts() {
-    setIsPostLoading(true);
-    const posts = await PostService.getAll();
-    setPosts(posts);
-    setIsPostLoading(false);
-  }
-
-
   const removePost = (post) => {
     setPosts(posts.filter(p => p.id !== post.id))
   }
@@ -45,7 +41,6 @@ function App() {
 
   return (
     <div className="App">
-      <button onClick={fetchPosts}>GET POSTS</button>
       <Button style={{marginTop: '30px'}}onClick={() => setModal(true)}>Создать пользователя</Button>
       <Modal visible={modal} setVisible={setModal}>
         <PostForm create={createPost}/>
@@ -55,6 +50,10 @@ function App() {
         filter={filter}
         setFilter={setFilter}
       />
+      {
+        postError &&
+          <h1>Произошла ошибка ${postError}</h1>
+      }
       {
         isPostLoading
         ? <div style={{display: 'flex', justifyContent: 'center', marginTop: 50}}>

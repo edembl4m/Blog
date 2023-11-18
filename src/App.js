@@ -27,7 +27,6 @@ function App() {
 
   const [fetchPosts, isPostLoading, postError] = useFetching(async () => {
     const response = await PostService.getAll(limit, page);
-    console.log("limit app", limit);
     setPosts(response.data);
     const totalCount = response.headers['x-total-count'];
     setTotalPages(getPagesCount(totalCount, limit));
@@ -50,7 +49,7 @@ function App() {
   }
 
 
-  const changePage = () => {
+  const changePage = (page) => {
     setPage(page);
     fetchPosts(limit, page);
   }

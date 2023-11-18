@@ -3,8 +3,7 @@ import { getPagesArray } from "../../../utils/page";
 
 const Pagination = ({totalPages, page, changePage}) => {
 
-    let pagesArray = getPagesArray(totalPages);
-    console.log("tp", totalPages);
+  let pagesArray = getPagesArray(totalPages);
 
   return (
     <div className="page__wrapper">
@@ -17,7 +16,6 @@ const Pagination = ({totalPages, page, changePage}) => {
                 {p}
             </span>
         )}
-        <p>wadawewae{totalPages}</p>
     </div>
   )
 }
